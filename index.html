@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>長輩圖產生器</title>
+    <script src="/jquery.js"></script>
+
+    <script>
+        function showPreview(event) {
+            // console.log(event.target.files.length);
+            if (event.target.files.length > 0) {
+                var src = URL.createObjectURL(event.target.files[0]);
+                var preview = document.getElementById("meme");
+                preview.src = src;
+                preview.style.display = "block";
+            }
+        }
+
+        $(document).ready(function() {
+            $("#createImg").click(function() {
+                $("#aDownload").fadeIn();
+                $("#aDownload").css("display", "block");
+            });
+        });
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Allerta+Stencil');
+        body {
+            margin: 0;
+            padding: 0;
+            background: rgb(41, 41, 41);
+        }
+        
+        div#positionSet {
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        #canvas {
+            border: 1px solid #aaa;
+            display: block;
+            margin: 10px 0;
+        }
+        
+        #meme {
+            width: 500px;
+            height: 500px;
+            margin: 10px 0;
+        }
+        
+        input#createImg {
+            width: 50px;
+            height: 50px;
+            margin: auto 0;
+            border-radius: 10px;
+        }
+        
+        input#createImg:hover {
+            background: #aaa;
+        }
+        
+        input#createImg:focus {
+            outline: none;
+        }
+        
+        a#aDownload {
+            display: none;
+            color: white;
+            text-decoration: none;
+            font-size: 2.5vw;
+            padding: 1vw;
+            border: 2px solid;
+            border-radius: 10px;
+            position: relative;
+            position: absolute;
+            transform: translateX(-50%);
+            left: 50%;
+        }
+        
+        label#UploadP {
+            background: darkolivegreen;
+            width: 200px;
+            height: 36px;
+            display: inline-block;
+            border-radius: 10px;
+            font-size: 30px;
+            text-align: center;
+            color: white;
+            padding: 10px;
+            position: absolute;
+        }
+        
+        label#UploadP:hover {
+            background: rgb(67, 85, 37);
+        }
+        
+        input#Upload {
+            opacity: 0;
+            position: absolute;
+            z-index: -1;
+            left: 15px;
+            top: 10px;
+        }
+        
+        div#UploadBox {
+            width: 220px;
+            transform: translateX(-50%);
+            position: absolute;
+            left: 50%;
+        }
+        
+        input#msg {
+            position: absolute;
+            top: 30px;
+            left: 200px;
+            font-size: 40px;
+        }
+        
+        input#msg2 {
+            position: absolute;
+            bottom: 30px;
+            left: 10px;
+            font-size: 35px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="positionSet">
+        <div style="position: relative;">
+            <img id="meme" accept="image/* " onchange="showPreview(event);">
+
+            <input type="text" id="msg" placeholder="早安!" maxlength="6" size="10">
+            <input type="text" id="msg2" placeholder="XXX祝福您，有美好的一天。" maxlength="14" size="22">
+
+            <div id="UploadBox">
+                <label id="UploadP" for="Upload">上傳圖片</label>
+                <input type="file" id="Upload" accept="image/*" onchange="showPreview(event);">
+            </div>
+        </div>
+
+        <input id="createImg" type="button" value="製作">
+
+        <div style="position: relative;">
+            <canvas id="canvas"></canvas>
+            <div>
+                <a id="aDownload" href="#" download="meme.png">下載</a>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        let canvas, ctx, oldTxt, f;
+        window.addEventListener('load', (ev) => {
+            canvas = document.getElementById('canvas');
+            ctx = canvas.getContext('2d');
+            canvas.width = 500;
+            canvas.height = 500;
+
+
+
+            drawText();
+
+            document.getElementById('createImg').addEventListener('click', drawText);
+        });
+
+
+        const drawText = function() {
+            let fontFamily = '微軟正黑體';
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.drawImage(meme, 0, 0, canvas.width, canvas.height);
+
+
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'alphabetic';
+            ctx.direction = 'ltr';
+
+            let txt = document.getElementById('msg').value;
+            let metrics = ctx.measureText(oldTxt);
+            let w = metrics.width;
+            ctx.font = `normal 40px xyz, ${fontFamily}`;
+
+            ctx.fillText(txt, 200, 50);
+            oldTxt = txt;
+
+            let txt2 = document.getElementById('msg2').value;
+            let metrics2 = ctx.measureText(oldTxt);
+            let w2 = metrics2.width;
+            ctx.font = ` 35px, ${fontFamily}`;
+
+            ctx.fillText(txt2, 10, 480);
+            oldTxt = txt2;
+
+
+            aDownload.href = canvas.toDataURL("image/png");
+        }
+    </script>
+</body>
+
+</html>
